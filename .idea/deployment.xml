@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="ws@159.226.41.232:3322">
+    <serverData>
+      <paths name="ws@159.226.41.232:3322">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/pycharm/projects/neat-cnn" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath path="/pycharm/projects/neat-cnn/evaluate/data" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
