@@ -194,3 +194,17 @@ class Net(nn.Module):
             else:
                 (layer[out_layer].weight.data[out_num])[in_num] = \
                     torch.FloatTensor([genome.connections[(in_node, out_node)].weight])
+
+    # neat to torch
+    def set_initial_parameters_backward(self):
+        for module in self.children():
+            for block in module:
+                if isinstance(block, nn.Conv2d):
+                    torch.nn.init.xavier_normal_(block.weight)
+                elif isinstance(block, nn.Linear):
+                    torch.nn.init.xavier_normal_(block.weight)
+                elif isinstance(block, GCNConv):
+                    torch.nn.init.xavier_normal_(block.lin.weight)
+
+    def set_initial_parameters_backward(self, genome: neat.genome.DefaultGenome):
+        pass

@@ -258,9 +258,9 @@ class DefaultGenome(object):
                 node_key = config.get_new_node_key(self.nodes)
                 assert node_key not in self.nodes
                 if i == 0:
-                    node = self.create_node(config, node_key, i, 'cnn', 3)
+                    node = self.create_node(config, node_key, i, 'cnn', [3,self.nodes_every_layers[i]])
                 else:
-                    node = self.create_node(config, node_key, i, 'cnn', self.nodes_every_layers[i-1])
+                    node = self.create_node(config, node_key, i, 'cnn', self.nodes_every_layers[i-1:i+1])
                 self.nodes[node_key] = node
                 self.layer[i][1].add(node_key)
 
@@ -411,8 +411,8 @@ class DefaultGenome(object):
                 for j in list(self.layer[layer_num + 1][1]):
                     connections.append((new_node_id, j))
 
-
-            #node_id = choice(list(self.layer[layer_num - 1][1]))
+            # 如果增加的是卷积层，要改变下一层卷积核的层数
+            # 如果增加的是卷积层中的最后一层，则不用
             #connection = self.create_connection(config, node_id, new_node_id)
             #self.connections[connection.key] = connection
 
@@ -717,9 +717,9 @@ class DefaultGenome(object):
         return node
 
     @staticmethod
-    def create_connection(config, input_id, output_id):
+    def create_connection(config, input_id, output_id,num_nodes):
         connection = config.connection_gene_type((input_id, output_id))
-        connection.init_attributes(config,0,0)
+        connection.init_attributes(config,0,num_nodes)
         return connection
 
     def connect_fs_neat_nohidden(self, config):
@@ -818,7 +818,7 @@ class DefaultGenome(object):
         fc_layer = [i for i in range(config.num_cnn_layer,len(self.layer))]
         for i in fc_layer:
             for node1, node2 in self.compute_full_connections_with_layer(config, i):
-                connection = self.create_connection(config, node1, node2)
+                connection = self.create_connection(config, node1, node2, self.nodes_every_layers[i-1:i+1])
                 self.connections[connection.key] = connection
 
     def connect_full_nodirect(self, config):

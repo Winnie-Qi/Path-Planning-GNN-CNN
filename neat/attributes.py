@@ -46,9 +46,11 @@ class FloatAttribute(BaseAttribute):
         max_value = getattr(config, self.max_value_name)
         return max(min(value, max_value), min_value)
 
-    def init_value(self, config, _):
+    def init_value(self, config, num_nodes):
         mean = getattr(config, self.init_mean_name)
         stdev = getattr(config, self.init_stdev_name)
+        if self.init_stdev_name == 'weight_init_stdev':
+            stdev = (2 / (num_nodes[0] + num_nodes[1])) ** 0.5
         init_type = getattr(config, self.init_type_name).lower()
 
         if ('gauss' in init_type) or ('normal' in init_type):
@@ -185,10 +187,10 @@ class ListAttribute(BaseAttribute):
         value = list()
 
         mean = getattr(config, self.init_mean_name)
-        stdev = getattr(config, self.init_stdev_name)
+        stdev = (2/(config.kernel_size * num_nodes[0] + config.kernel_size * num_nodes[1]))**0.5
         init_type = getattr(config, self.init_type_name).lower()
 
-        for i in range(config.kernel_size * num_nodes):
+        for i in range(config.kernel_size * num_nodes[0]):
             if ('gauss' in init_type) or ('normal' in init_type):
                 value.append(self.clamp(gauss(mean, stdev), config))
             elif 'uniform' in init_type:

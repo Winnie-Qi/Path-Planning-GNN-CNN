@@ -14,10 +14,16 @@ from dataloader.decentral_dataloader import DecentralPlannerDataLoader
 
 def eval_fitness(output, target):
     fitness = 0
+    total_matched_rows = 0
     target = target.permute(1, 0, 2)
     criterion = nn.CrossEntropyLoss()
     for agent in range(len(output)):
         fitness += -criterion(output[agent], torch.max(target[agent], 1)[1])
+        max_indices = torch.argmax(output[agent], dim=1)
+        one_indices = torch.nonzero(target[agent], as_tuple=False)
+        matched_indices = torch.eq(max_indices, one_indices[:, 1])
+        total_matched_rows += torch.sum(matched_indices).item()
+    print(f"-------Accuracy is {total_matched_rows}/640----------")
     return fitness.item()
 
 def eval_genomes(genomes, config, input, target, gso):
